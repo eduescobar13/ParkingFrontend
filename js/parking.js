@@ -2,16 +2,16 @@
 
 // DECLARACIÓN DE CONSTANTES
 const PLAZAS_PARKING_INICIAL = 100;
+const MILISEG_OCUPACION = 5000;
 
 // DECLARACIÓN DE VARIABLES GLOBALES
 var plazas_totales = PLAZAS_PARKING_INICIAL;
-var plazas_disponibles = PLAZAS_PARKING_INICIAL;
 
 $(document).ready(function() {
   document.getElementById('plazas-totales').innerHTML = PLAZAS_PARKING_INICIAL;
   rellenar_tabla_ocupacion();
-  obtener_ocupacion_plazas();
   obtener_usuarios();
+  Concurrent.Thread.create(comprobar_ocupacion_plazas);
 });
 
 function rellenar_tabla_ocupacion() {
@@ -28,10 +28,19 @@ function insertar_ocupacion_plazas(identificador) {
 		document.getElementById('tabla-plazas').innerHTML += formato_plaza_disponible;
 }
 
+function comprobar_ocupacion_plazas() {
+  while (true) {
+    obtener_ocupacion_plazas();
+  }
+}
+
 function obtener_ocupacion_plazas() {
+  var plazas_disponibles = PLAZAS_PARKING_INICIAL;
   $.ajax({
+      type: 'GET',
       url: RUTA_OCUPACION_PLAZAS,
       dataType: 'json',
+      headers: {'Authorization': 'application/json'},
       success: function(datos) {
         $(datos).each(function(i, valor) {
             actualizar_plaza_ocupada(valor.parkingLotId, valor.state);
@@ -56,8 +65,10 @@ function actualizar_plaza_ocupada(identificador, estado) {
 
 function obtener_usuarios() {
   $.ajax({
+      type: 'GET',
       url: RUTA_USUARIOS,
       dataType: 'json',
+      headers: {'Authorization': 'application/json'},
       success: function(datos) {
         $(datos).each(function(i, valor) {
             insertar_usuario(valor.userId, valor.username);
@@ -75,13 +86,13 @@ function insertar_usuario(identificador, nombre) {
 
 function mostrar_datos_usuario(identificador) {
 	$.ajax({
-				type: 'POST',
-				url: RUTA_DATOS_USUARIO2,
+				type: 'GET',
+				url: RUTA_DATOS_USUARIO + "/" + identificador,
 				dataType: 'json',
-				data: 'identificador='+identificador,
+        headers: {'Authorization': 'application/json'},
 				success: function(datos) {
 					$(datos).each(function(i, valor) {
-            insertar_datos_usuarios(valor.email, valor.parkingLotId, valor.vehicle);
+            insertar_datos_usuarios(valor.email, valor.Vehicle, valor.parkingLotId);
 					});
 				}
 	}).done(function() {
@@ -93,14 +104,8 @@ function mostrar_datos_usuario(identificador) {
   });
 }
 
-function insertar_datos_usuarios(correo, id_plaza, vehiculo) {
+function insertar_datos_usuarios(correo, vehiculo, id_plaza) {
   document.getElementById('texto-correo').innerHTML = correo;
-  document.getElementById('texto-vehiculo').innerHTML = vehiculo;
-  if (id_plaza == null) {
-    document.getElementById('texto-plaza').innerHTML = "NO OCUPA PLAZA";
-    $("#texto-plaza").css('background-color', '#3C8F32');
-  }
-  else {
-    document.getElementById('texto-plaza').innerHTML = "OCUPANDO PLAZA " + id_plaza;
-  }
+  document.getElementById('texto-vehiculo').innerHTML = vehiculo.brand + " " + vehiculo.model + " " + vehiculo.colour;
+  document.getElementById('texto-plaza').innerHTML = "ALQUILANDO PLAZA " + id_plaza;
 }

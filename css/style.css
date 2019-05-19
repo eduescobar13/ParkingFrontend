@@ -156,6 +156,9 @@ body {
 	align-content: flex-end;
 	flex-direction: column;
 	border-radius: 3px;
+	-webkit-box-shadow: 1px 1px 20px -9px rgba(0,0,0,0.75);
+	-moz-box-shadow: 1px 1px 20px -9px rgba(0,0,0,0.75);
+	box-shadow: 1px 1px 20px -9px rgba(0,0,0,0.75);
 }
 
 .contenedor-mostrar-usuarios .contenedor-auxiliar {
@@ -250,12 +253,11 @@ body {
 .contenedor-auxiliar .contenedor-informacion .contenedor-plaza {
 	width: 100%;
 	height: 34%;
-	background-color: yellow;
 	border-bottom-left-radius: 3px;
 	border-bottom-right-radius: 3px;
-	background-color: #701613;
+	background-color: #F7DB5C;
 	font-family: sans-serif;
-	color: #FDFBFB;;
+	color: #000000;
 	font-size: 13px;
 	text-align: center;
 	font-weight: bold;

@@ -5,6 +5,7 @@
   		<link href="css/style.css" rel="stylesheet" type="text/css">
 	    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
 			<script type="text/javascript" src="js/rutas.js"></script>
+			<script type="text/javascript" src="js/Concurrent.Thread.js"></script>
 			<script type="text/javascript" src="js/parking.js"></script>
 	</head>
 
